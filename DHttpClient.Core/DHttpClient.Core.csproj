@@ -1,11 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>DHttpClient</RootNamespace>
+        <TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>DHttpClient - Fluent HTTP Client for .NET</Title>
+        <Authors>Julian B.</Authors>
+        <Description>A fluent HTTP client for .NET that simplifies HTTP requests with a chainable API, error handling, and built-in support for various content types.</Description>
+        <Copyright>© 2025 DHttpClient.Core. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://github.com/julyan97/DHttpClient</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/julyan97/DHttpClient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
+        <PackageReleaseNotes>Initial release of DHttpClient.Core (v1.0.0)
+- Supports GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
+- Fluent API for building requests.
+- JSON serialization and deserialization.
+- Multipart and form URL-encoded content support.
+- Built-in error handling with Result&lt;T&gt; wrapper.
+- Supports custom HttpClient instances for DI.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
