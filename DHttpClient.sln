@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHttpClient.Core", "DHttpClient.Core\DHttpClient.Core.csproj", "{3F626D0B-1101-4654-BC84-40E4F3E85680}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2D0E490B-555C-4E3B-B296-98618FAE7882}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{87CD6F4E-79DA-4D42-B28C-BEB9D94C07D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHttpClient.Tests", "DHttpClient.Tests\DHttpClient.Tests.csproj", "{008E848F-D872-4115-A33E-A430699EB7EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F626D0B-1101-4654-BC84-40E4F3E85680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F626D0B-1101-4654-BC84-40E4F3E85680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F626D0B-1101-4654-BC84-40E4F3E85680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F626D0B-1101-4654-BC84-40E4F3E85680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{008E848F-D872-4115-A33E-A430699EB7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{008E848F-D872-4115-A33E-A430699EB7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{008E848F-D872-4115-A33E-A430699EB7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{008E848F-D872-4115-A33E-A430699EB7EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3F626D0B-1101-4654-BC84-40E4F3E85680} = {2D0E490B-555C-4E3B-B296-98618FAE7882}
+		{008E848F-D872-4115-A33E-A430699EB7EF} = {87CD6F4E-79DA-4D42-B28C-BEB9D94C07D1}
+	EndGlobalSection
+EndGlobal
