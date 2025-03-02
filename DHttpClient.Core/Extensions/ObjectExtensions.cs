@@ -1,24 +1,18 @@
 ﻿using System.Reflection;
 
-namespace DHttpClient.Extensions;
-
-public static class ObjectExtensions
+namespace DHttpClient.Extensions
 {
-    public static Dictionary<string, string> ToKeyValue(this object obj)
+    public static class ObjectExtensions
     {
-        if (obj is null)
-            return null!;
-        
-        var dictionary = new Dictionary<string, string>();
-        foreach (var property in obj.GetType().GetProperties())
+        public static Dictionary<string, string> ToKeyValue(this object obj)
         {
-            dictionary[property.Name] = property.GetValue(obj)?.ToString() ?? string.Empty;
-        }
+            if (obj is null)
+                return new Dictionary<string, string>();
 
-        return obj.GetType()
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.GetValue(obj) != null)
-            .Select(p => new KeyValuePair<string, string>(p.Name, p.GetValue(obj)?.ToString()!))
-            .ToDictionary(x => x.Key, x => x.Value);
+            return obj.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.GetValue(obj) != null)
+                .ToDictionary(p => p.Name, p => p.GetValue(obj)?.ToString() ?? string.Empty);
+        }
     }
 }

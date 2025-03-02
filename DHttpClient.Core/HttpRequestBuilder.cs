@@ -17,16 +17,10 @@ namespace DHttpClient
         private UriBuilder _uriBuilder;
         private HttpContent _httpContent;
 
-        /// <summary>
-        /// Initializes a new instance of HttpRequestBuilder using a new HttpClient instance.
-        /// </summary>
         public HttpRequestBuilder() : this(new HttpClient(), disposeHttpClient: true)
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of HttpRequestBuilder using the provided HttpClient instance.
-        /// </summary>
         public HttpRequestBuilder(HttpClient httpClient, bool disposeHttpClient = false)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -34,9 +28,6 @@ namespace DHttpClient
             _httpHeaders = new Dictionary<string, string>();
         }
 
-        /// <summary>
-        /// Sets the request URI.
-        /// </summary>
         public IHttpRequestBuilder WithRequestUri(string requestUri)
         {
             if (string.IsNullOrWhiteSpace(requestUri))
@@ -46,9 +37,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Appends query parameters to the request URI.
-        /// </summary>
         public IHttpRequestBuilder WithQueryParameters(object parameters)
         {
             if (parameters == null)
@@ -57,7 +45,6 @@ namespace DHttpClient
             var queryToAppend = parameters.ToQueryString();
             if (!string.IsNullOrWhiteSpace(queryToAppend))
             {
-                // Append to any existing query string.
                 var currentQuery = _uriBuilder.Query.TrimStart('?');
                 _uriBuilder.Query = string.IsNullOrEmpty(currentQuery)
                     ? queryToAppend.TrimStart('?')
@@ -66,18 +53,12 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Sets the request content directly.
-        /// </summary>
         public IHttpRequestBuilder WithContent(HttpContent content)
         {
             _httpContent = content;
             return this;
         }
 
-        /// <summary>
-        /// Serializes the object to JSON and sets it as the request body.
-        /// </summary>
         public IHttpRequestBuilder WithBodyContent(object parameters)
         {
             var json = parameters.ToJson();
@@ -85,9 +66,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Serializes the dictionary to JSON and sets it as the request body.
-        /// </summary>
         public IHttpRequestBuilder WithBodyContent(Dictionary<string, string> parameters)
         {
             var json = parameters.ToJson();
@@ -95,9 +73,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Builds multipart/form-data content.
-        /// </summary>
         public IHttpRequestBuilder WithFormMultiPartContent(Func<MultiPartContentBuilder, HttpContent> builder)
         {
             if (builder == null)
@@ -108,9 +83,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Sets form URL-encoded content using an object's key/value pairs.
-        /// </summary>
         public IHttpRequestBuilder WithFormUrlEncodedContent(object parameters)
         {
             if (parameters == null)
@@ -120,9 +92,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Sets form URL-encoded content using a dictionary.
-        /// </summary>
         public IHttpRequestBuilder WithFormUrlEncodedContent(Dictionary<string, string> parameters)
         {
             if (parameters == null)
@@ -132,9 +101,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Adds a single header to the request.
-        /// </summary>
         public IHttpRequestBuilder WithHeader(string key, string value)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -144,9 +110,6 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Adds multiple headers to the request.
-        /// </summary>
         public IHttpRequestBuilder WithHeaders(Dictionary<string, string> headers)
         {
             if (headers == null)
@@ -159,27 +122,18 @@ namespace DHttpClient
             return this;
         }
 
-        /// <summary>
-        /// Sets the HTTP method (GET, POST, PUT, DELETE, etc.).
-        /// </summary>
         public IHttpRequestBuilder WithMethod(HttpMethod method)
         {
             _httpMethod = method ?? throw new ArgumentNullException(nameof(method));
             return this;
         }
 
-        /// <summary>
-        /// Configures the request timeout.
-        /// </summary>
         public IHttpRequestBuilder WithTimeout(TimeSpan timeout)
         {
             _httpClient.Timeout = timeout;
             return this;
         }
 
-        /// <summary>
-        /// Constructs the HttpRequestMessage with all configured settings.
-        /// </summary>
         private HttpRequestMessage BuildRequestMessage()
         {
             if (_uriBuilder == null)
@@ -210,9 +164,6 @@ namespace DHttpClient
             return request;
         }
 
-        /// <summary>
-        /// Sends the request asynchronously and returns a wrapped HttpResponseMessage.
-        /// </summary>
         public async Task<Result<HttpResponseMessage>> SendAsync(CancellationToken cancellationToken = default)
         {
             try
@@ -251,9 +202,6 @@ namespace DHttpClient
             }
         }
 
-        /// <summary>
-        /// Sends the request and returns the response content as a string wrapped in a Result.
-        /// </summary>
         public async Task<Result<string>> SendStringAsync(CancellationToken cancellationToken = default)
         {
             var responseResult = await SendAsync(cancellationToken).ConfigureAwait(false);
@@ -289,9 +237,6 @@ namespace DHttpClient
             }
         }
 
-        /// <summary>
-        /// Sends the request and deserializes the JSON response to an object of type T wrapped in a Result.
-        /// </summary>
         public async Task<Result<T>> SendObjectAsync<T>(CancellationToken cancellationToken = default)
         {
             var stringResult = await SendStringAsync(cancellationToken).ConfigureAwait(false);
@@ -327,9 +272,6 @@ namespace DHttpClient
             }
         }
 
-        /// <summary>
-        /// Sends the request and returns the response content as a stream wrapped in a Result.
-        /// </summary>
         public async Task<Result<Stream>> SendStreamAsync(CancellationToken cancellationToken = default)
         {
             try
@@ -365,9 +307,6 @@ namespace DHttpClient
             }
         }
 
-        /// <summary>
-        /// Sends the request and returns the response content as a byte array wrapped in a Result.
-        /// </summary>
         public async Task<Result<byte[]>> SendBytesAsync(CancellationToken cancellationToken = default)
         {
             try

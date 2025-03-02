@@ -18,22 +18,14 @@ namespace DHttpClient.Models
             _contents = new List<HttpContent>();
         }
 
-        /// <summary>
-        /// Adds text content with the specified name and content.
-        /// </summary>
-        /// <param name="name">The name of the content part.</param>
-        /// <param name="content">The text content.</param>
-        /// <returns>The current instance for fluent chaining.</returns>
         public MultiPartContentBuilder AddTextContent(string name, string content)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Content name cannot be null or whitespace.", nameof(name));
 
-            // Use an empty string if content is null.
             var textContent = new StringContent(content ?? string.Empty);
             textContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
-                // Enclose in quotes to ensure proper formatting.
                 Name = $"\"{name}\""
             };
 
@@ -41,13 +33,6 @@ namespace DHttpClient.Models
             return this;
         }
 
-        /// <summary>
-        /// Adds file content using a byte array.
-        /// </summary>
-        /// <param name="name">The name of the content part.</param>
-        /// <param name="content">The file content as a byte array.</param>
-        /// <param name="fileName">The file name.</param>
-        /// <returns>The current instance for fluent chaining.</returns>
         public MultiPartContentBuilder AddFileContent(string name, byte[] content, string fileName)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -68,13 +53,6 @@ namespace DHttpClient.Models
             return this;
         }
 
-        /// <summary>
-        /// Adds file content using a stream.
-        /// </summary>
-        /// <param name="name">The name of the content part.</param>
-        /// <param name="content">The stream containing the file content.</param>
-        /// <param name="fileName">The file name.</param>
-        /// <returns>The current instance for fluent chaining.</returns>
         public MultiPartContentBuilder AddStreamContent(string name, Stream content, string fileName)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -96,9 +74,20 @@ namespace DHttpClient.Models
         }
 
         /// <summary>
-        /// Builds and returns a MultipartFormDataContent instance containing all added parts.
+        /// Adds file content from a file path.
         /// </summary>
-        /// <returns>A MultipartFormDataContent instance.</returns>
+        public MultiPartContentBuilder AddFileContentFromPath(string name, string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Content name cannot be null or whitespace.", nameof(name));
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                throw new ArgumentException("Invalid file path.", nameof(filePath));
+
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            string fileName = Path.GetFileName(filePath);
+            return AddFileContent(name, fileBytes, fileName);
+        }
+
         public MultipartFormDataContent Build()
         {
             var multipartContent = new MultipartFormDataContent();
