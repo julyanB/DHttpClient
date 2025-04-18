@@ -37,8 +37,9 @@ Additional Notes:
 These optimizations aim to improve performance, reduce complexity, and enhance developer experience without altering the core functionality of the HTTP client.
 The changes remain backward-compatible with existing usage patterns while providing a more efficient implementation.
 Future enhancements may include additional content type support and more advanced error handling mechanisms as needed.</PackageReleaseNotes>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <PackageIcon>D-Logo.png</PackageIcon>
+        <PackageId>DSeries.DHttpClient.Core</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
