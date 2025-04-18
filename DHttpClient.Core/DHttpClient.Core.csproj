@@ -11,9 +11,9 @@
         <Authors>Julian B.</Authors>
         <Description>A fluent HTTP client for .NET that simplifies HTTP requests with a chainable API, error handling, and built-in support for various content types.</Description>
         <Copyright>© 2025 DHttpClient.Core. All rights reserved.</Copyright>
-        <PackageProjectUrl>https://github.com/julyan97/DHttpClient</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/julyanB/DHttpClient</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/julyan97/DHttpClient</RepositoryUrl>
+        <RepositoryUrl>https://github.com/julyanB/DHttpClient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
         <PackageReleaseNotes>Release Notes – DHttpClient Optimizations v1.0.4
