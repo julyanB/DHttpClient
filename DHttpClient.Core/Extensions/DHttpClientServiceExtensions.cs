@@ -12,7 +12,7 @@ namespace DHttpClient.Extensions
             public static IServiceCollection AddDHttpClient(this IServiceCollection services)
             {
                 // Registers IHttpRequestBuilder with an HttpClient injected via IHttpClientFactory.
-                services.AddHttpClient<IHttpRequestBuilder, HttpRequestBuilder>();
+                services.AddHttpClient<IDHttpClient, global::DHttpClient.DHttpClient>();
                 return services;
             }
         }

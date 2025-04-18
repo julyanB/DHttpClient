@@ -1,73 +1,74 @@
+using System.Runtime.CompilerServices;
 using DHttpClient.Models;
 
 namespace DHttpClient
 {
-    public interface IHttpRequestBuilder : IDisposable
+    public interface IDHttpClient : IDisposable
     {
         /// <summary>
         /// Sets the request URI.
         /// </summary>
-        IHttpRequestBuilder WithRequestUri(string requestUri);
+        IDHttpClient WithRequestUri(string requestUri);
 
         /// <summary>
         /// Appends query parameters to the request URI.
         /// </summary>
-        IHttpRequestBuilder WithQueryParameters(object parameters);
+        IDHttpClient WithQueryParameters(object parameters);
 
         /// <summary>
         /// Sets the request content directly.
         /// </summary>
-        IHttpRequestBuilder WithContent(HttpContent content);
+        IDHttpClient WithContent(HttpContent content);
 
         /// <summary>
         /// Serializes the object to JSON and sets it as the request body.
         /// </summary>
-        IHttpRequestBuilder WithBodyContent(object parameters);
+        IDHttpClient WithBodyContent(object parameters);
 
         /// <summary>
         /// Serializes the dictionary to JSON and sets it as the request body.
         /// </summary>
-        IHttpRequestBuilder WithBodyContent(Dictionary<string, string> parameters);
+        IDHttpClient WithBodyContent(Dictionary<string, string> parameters);
 
         /// <summary>
         /// Builds multipart/form-data content.
         /// </summary>
-        IHttpRequestBuilder WithFormMultiPartContent(Func<MultiPartContentBuilder, HttpContent> builder);
+        IDHttpClient WithFormMultiPartContent(Func<MultiPartContentBuilder, HttpContent> builder);
 
         /// <summary>
         /// Sets form URL-encoded content using an object's key/value pairs.
         /// </summary>
-        IHttpRequestBuilder WithFormUrlEncodedContent(object parameters);
+        IDHttpClient WithFormUrlEncodedContent(object parameters);
 
         /// <summary>
         /// Sets form URL-encoded content using a dictionary.
         /// </summary>
-        IHttpRequestBuilder WithFormUrlEncodedContent(Dictionary<string, string> parameters);
+        IDHttpClient WithFormUrlEncodedContent(Dictionary<string, string> parameters);
 
         /// <summary>
         /// Adds a single header to the request.
         /// </summary>
-        IHttpRequestBuilder WithHeader(string key, string value);
+        IDHttpClient WithHeader(string key, string value);
 
         /// <summary>
         /// Adds multiple headers to the request.
         /// </summary>
-        IHttpRequestBuilder WithHeaders(Dictionary<string, string> headers);
+        IDHttpClient WithHeaders(Dictionary<string, string> headers);
 
         /// <summary>
         /// Sets the HTTP method (GET, POST, PUT, DELETE, etc.).
         /// </summary>
-        IHttpRequestBuilder WithMethod(HttpMethod method);
+        IDHttpClient WithMethod(HttpMethod method);
 
         /// <summary>
         /// Configures the request timeout.
         /// </summary>
-        IHttpRequestBuilder WithTimeout(TimeSpan timeout);
+        IDHttpClient WithTimeout(TimeSpan timeout);
 
         /// <summary>
         /// Sends the request asynchronously and returns a wrapped HttpResponseMessage.
         /// </summary>
-        Task<Result<HttpResponseMessage>> SendAsync(CancellationToken cancellationToken = default);
+        Task<Result<HttpResponseMessage>> SendAsync(HttpCompletionOption? completionOption = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sends the request and returns the response content as a string wrapped in a Result.
@@ -82,8 +83,13 @@ namespace DHttpClient
         /// <summary>
         /// Sends the request and returns the response content as a stream wrapped in a Result.
         /// </summary>
-        Task<Result<Stream>> SendStreamAsync(CancellationToken cancellationToken = default);
+        Task<Result<Stream>> SendStreamAsync(HttpCompletionOption? completionOption = null, CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// Sends the request and returns the response content as a stream of type T wrapped in a Result.
+        /// </summary>
+        Task<Result<IAsyncEnumerable<string>>> SendLiveStreamAsync([EnumeratorCancellation] CancellationToken cancellationToken = default);
+        
         /// <summary>
         /// Sends the request and returns the response content as a byte array wrapped in a Result.
         /// </summary>

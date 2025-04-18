@@ -8,7 +8,7 @@ namespace TestProject1
         [Fact]
         public async Task GetRequest_ShouldReturnMethodGet()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Get);
 
@@ -21,7 +21,7 @@ namespace TestProject1
         [Fact]
         public async Task GetRequest_WithQueryParameters_ShouldEchoQueryParameters()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithQueryParameters(new { test = "value", number = 123 })
                    .WithMethod(HttpMethod.Get);
@@ -38,7 +38,7 @@ namespace TestProject1
         [Fact]
         public async Task PostRequest_ShouldReturnMethodPostAndJsonPayload()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var payload = new { name = "test", value = 456 };
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Post)
@@ -55,7 +55,7 @@ namespace TestProject1
         [Fact]
         public async Task PostRequest_WithFormUrlEncodedContent_ShouldReturnFormData()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var formData = new Dictionary<string, string>
             {
                 {"field1", "value1"},
@@ -77,7 +77,7 @@ namespace TestProject1
         [Fact]
         public async Task PutRequest_ShouldReturnMethodPutAndJsonPayload()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var payload = new { id = 1, status = "updated" };
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Put)
@@ -94,7 +94,7 @@ namespace TestProject1
         [Fact]
         public async Task PutRequest_WithQueryParameters_ShouldEchoQueryParameters()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithQueryParameters(new { update = "true", user = "john" })
                    .WithMethod(HttpMethod.Put);
@@ -111,7 +111,7 @@ namespace TestProject1
         [Fact]
         public async Task DeleteRequest_ShouldReturnMethodDelete()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Delete);
 
@@ -124,7 +124,7 @@ namespace TestProject1
         [Fact]
         public async Task DeleteRequest_WithJsonPayload_ShouldReturnMethodDeleteAndPayload()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var payload = new { reason = "cleanup", force = true };
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Delete)
@@ -142,7 +142,7 @@ namespace TestProject1
         [Fact]
         public async Task PatchRequest_ShouldReturnMethodPatchAndJsonPayload()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var payload = new { patchField = "value" };
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(new HttpMethod("PATCH"))
@@ -158,7 +158,7 @@ namespace TestProject1
         [Fact]
         public async Task PatchRequest_WithFormUrlEncodedContent_ShouldReturnFormData()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             var formData = new Dictionary<string, string>
             {
                 {"patchField", "newValue"}
@@ -178,7 +178,7 @@ namespace TestProject1
         [Fact]
         public async Task HeadRequest_ShouldReturnStatus200AndNoBody()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Head);
 
@@ -191,7 +191,7 @@ namespace TestProject1
         [Fact]
         public async Task HeadRequest_ShouldReturnCorrectHeaders()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Head);
 
@@ -204,7 +204,7 @@ namespace TestProject1
         [Fact]
         public async Task OptionsRequest_ShouldReturnAllowedMethods()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithMethod(HttpMethod.Options);
 
@@ -218,7 +218,7 @@ namespace TestProject1
         [Fact]
         public async Task OptionsRequest_WithQueryParameters_ShouldReturnAllowedMethods()
         {
-            using var builder = new HttpRequestBuilder();
+            using var builder = new DHttpClient.DHttpClient();
             builder.WithRequestUri("https://httpbin.org/anything")
                    .WithQueryParameters(new { extra = "true" })
                    .WithMethod(HttpMethod.Options);

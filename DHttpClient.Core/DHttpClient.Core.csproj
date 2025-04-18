@@ -16,28 +16,14 @@
         <RepositoryUrl>https://github.com/julyan97/DHttpClient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
-        <PackageReleaseNotes>Release Notes – DHttpClient Optimizations v1.0.1
+        <PackageReleaseNotes>Release Notes – DHttpClient Optimizations v1.0.4
 
-Enhancements &amp; Optimizations:
-
-Optimized Reflection in ObjectExtensions:
-
-Refactored the ToKeyValue extension method to use a single-pass iteration over public properties. This change reduces unnecessary overhead when converting objects to key/value pairs.
-Enhanced MultiPartContentBuilder:
-
-Added a new overload (AddFileContentFromPath) that accepts a file path. This simplifies adding file content by reading bytes directly from a specified file, making file uploads more convenient.
-Streamlined HttpRequestBuilder:
-
-Removed retry and logging functionality to simplify the builder’s core implementation. This makes the code leaner and easier to maintain while still offering a full-featured fluent API for constructing and sending HTTP requests.
-ASP.NET Core Integration:
-
-Introduced extension methods to facilitate registration with the ASP.NET Core dependency injection container. This integration leverages IHttpClientFactory for creating underlying HttpClient instances, ensuring that your DHttpClient can be easily injected into controllers or services.
-Additional Notes:
-
-These optimizations aim to improve performance, reduce complexity, and enhance developer experience without altering the core functionality of the HTTP client.
-The changes remain backward-compatible with existing usage patterns while providing a more efficient implementation.
-Future enhancements may include additional content type support and more advanced error handling mechanisms as needed.</PackageReleaseNotes>
-        <Version>1.0.3</Version>
+            We've made some key improvements to how live streaming responses are handled in DHttpClient.
+            Live Stream Handling Improvements
+            Consistent Error Handling for Streams: The SendLiveStreamAsync method now aligns with other Send methods by returning a IAsyncEnumerable. This means you can now check for initial connection or header-read failures using the Result object before starting to consume the stream data, providing more robust error detection compared to only relying on exceptions during stream consumption.
+            Improved Resource Management: The internal logic for SendLiveStreamAsync has been updated to correctly manage the lifetime of the underlying HttpResponseMessage. It ensures the response and its stream are properly disposed of when the async enumerable is fully consumed or the await foreach loop is exited prematurely.
+            Simplified Data Consumption: For line-delimited stream formats like Server-Sent Events (SSE), SendLiveStreamAsync now automatically strips the data: prefix and leading whitespace from yielded lines, returning only the payload. This simplifies parsing for callers.</PackageReleaseNotes>
+        <Version>1.0.4</Version>
         <PackageIcon>D-Logo.png</PackageIcon>
         <PackageId>DSeries.DHttpClient.Core</PackageId>
     </PropertyGroup>
@@ -45,6 +31,8 @@ Future enhancements may include additional content type support and more advance
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="System.Text.Json" Version="9.0.4" />
+
     </ItemGroup>
 
     <PropertyGroup>

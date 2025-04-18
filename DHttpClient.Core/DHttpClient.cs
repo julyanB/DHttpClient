@@ -1,6 +1,8 @@
 ﻿using DHttpClient.Extensions;
 using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using DHttpClient.Models;
 
 namespace DHttpClient
@@ -8,7 +10,7 @@ namespace DHttpClient
     /// <summary>
     /// A fluent HTTP request builder that supports various content types and HTTP methods.
     /// </summary>
-    public class HttpRequestBuilder : IHttpRequestBuilder, IDisposable
+    public class DHttpClient : IDHttpClient, IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly bool _disposeHttpClient;
@@ -17,18 +19,18 @@ namespace DHttpClient
         private UriBuilder _uriBuilder;
         private HttpContent _httpContent;
 
-        public HttpRequestBuilder() : this(new HttpClient(), disposeHttpClient: true)
+        public DHttpClient() : this(new HttpClient(), disposeHttpClient: true)
         {
         }
 
-        public HttpRequestBuilder(HttpClient httpClient, bool disposeHttpClient = false)
+        public DHttpClient(HttpClient httpClient, bool disposeHttpClient = false)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _disposeHttpClient = disposeHttpClient;
             _httpHeaders = new Dictionary<string, string>();
         }
 
-        public IHttpRequestBuilder WithRequestUri(string requestUri)
+        public IDHttpClient WithRequestUri(string requestUri)
         {
             if (string.IsNullOrWhiteSpace(requestUri))
                 throw new ArgumentException("Request URI cannot be null or whitespace.", nameof(requestUri));
@@ -37,7 +39,7 @@ namespace DHttpClient
             return this;
         }
 
-        public IHttpRequestBuilder WithQueryParameters(object parameters)
+        public IDHttpClient WithQueryParameters(object parameters)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -50,30 +52,31 @@ namespace DHttpClient
                     ? queryToAppend.TrimStart('?')
                     : $"{currentQuery}&{queryToAppend.TrimStart('?')}";
             }
+
             return this;
         }
 
-        public IHttpRequestBuilder WithContent(HttpContent content)
+        public IDHttpClient WithContent(HttpContent content)
         {
             _httpContent = content;
             return this;
         }
 
-        public IHttpRequestBuilder WithBodyContent(object parameters)
+        public IDHttpClient WithBodyContent(object parameters)
         {
             var json = parameters.ToJson();
             _httpContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
             return this;
         }
 
-        public IHttpRequestBuilder WithBodyContent(Dictionary<string, string> parameters)
+        public IDHttpClient WithBodyContent(Dictionary<string, string> parameters)
         {
             var json = parameters.ToJson();
             _httpContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
             return this;
         }
 
-        public IHttpRequestBuilder WithFormMultiPartContent(Func<MultiPartContentBuilder, HttpContent> builder)
+        public IDHttpClient WithFormMultiPartContent(Func<MultiPartContentBuilder, HttpContent> builder)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
@@ -83,7 +86,7 @@ namespace DHttpClient
             return this;
         }
 
-        public IHttpRequestBuilder WithFormUrlEncodedContent(object parameters)
+        public IDHttpClient WithFormUrlEncodedContent(object parameters)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -92,7 +95,7 @@ namespace DHttpClient
             return this;
         }
 
-        public IHttpRequestBuilder WithFormUrlEncodedContent(Dictionary<string, string> parameters)
+        public IDHttpClient WithFormUrlEncodedContent(Dictionary<string, string> parameters)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -101,7 +104,7 @@ namespace DHttpClient
             return this;
         }
 
-        public IHttpRequestBuilder WithHeader(string key, string value)
+        public IDHttpClient WithHeader(string key, string value)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentException("Header key cannot be null or whitespace.", nameof(key));
@@ -110,7 +113,7 @@ namespace DHttpClient
             return this;
         }
 
-        public IHttpRequestBuilder WithHeaders(Dictionary<string, string> headers)
+        public IDHttpClient WithHeaders(Dictionary<string, string> headers)
         {
             if (headers == null)
                 throw new ArgumentNullException(nameof(headers));
@@ -119,16 +122,17 @@ namespace DHttpClient
             {
                 _httpHeaders[header.Key] = header.Value;
             }
+
             return this;
         }
 
-        public IHttpRequestBuilder WithMethod(HttpMethod method)
+        public IDHttpClient WithMethod(HttpMethod method)
         {
             _httpMethod = method ?? throw new ArgumentNullException(nameof(method));
             return this;
         }
 
-        public IHttpRequestBuilder WithTimeout(TimeSpan timeout)
+        public IDHttpClient WithTimeout(TimeSpan timeout)
         {
             _httpClient.Timeout = timeout;
             return this;
@@ -164,16 +168,20 @@ namespace DHttpClient
             return request;
         }
 
-        public async Task<Result<HttpResponseMessage>> SendAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<HttpResponseMessage>> SendAsync(
+            HttpCompletionOption? completionOption = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
                 var requestMessage = BuildRequestMessage();
-                var response = await _httpClient.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var options = completionOption ?? HttpCompletionOption.ResponseContentRead;
+
+                var response = await _httpClient.SendAsync(requestMessage, options, cancellationToken).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return new Result<HttpResponseMessage>
                     {
                         IsSuccess = false,
@@ -204,7 +212,7 @@ namespace DHttpClient
 
         public async Task<Result<string>> SendStringAsync(CancellationToken cancellationToken = default)
         {
-            var responseResult = await SendAsync(cancellationToken).ConfigureAwait(false);
+            var responseResult = await SendAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             if (!responseResult.IsSuccess)
             {
                 return new Result<string>
@@ -215,6 +223,7 @@ namespace DHttpClient
                     StatusCode = responseResult.StatusCode
                 };
             }
+
             try
             {
                 string content = await responseResult.Data.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -250,6 +259,7 @@ namespace DHttpClient
                     StatusCode = stringResult.StatusCode
                 };
             }
+
             try
             {
                 T data = stringResult.Data.ToObject<T>();
@@ -272,11 +282,16 @@ namespace DHttpClient
             }
         }
 
-        public async Task<Result<Stream>> SendStreamAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<Stream>> SendStreamAsync(
+            HttpCompletionOption? completionOption = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                var responseResult = await SendAsync(cancellationToken).ConfigureAwait(false);
+                var responseResult = await SendAsync(
+                    completionOption: completionOption,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+
                 if (!responseResult.IsSuccess)
                 {
                     return new Result<Stream>
@@ -287,6 +302,7 @@ namespace DHttpClient
                         StatusCode = responseResult.StatusCode
                     };
                 }
+
                 var stream = await responseResult.Data.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 return new Result<Stream>
                 {
@@ -307,11 +323,52 @@ namespace DHttpClient
             }
         }
 
+        public async Task<Result<IAsyncEnumerable<string>>> SendLiveStreamAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var request = BuildRequestMessage();
+                // Use SendAsync here, but with ResponseHeadersRead
+                var responseResult = await SendAsync(HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+                if (!responseResult.IsSuccess)
+                {
+                    // Return failure result from the initial connection attempt
+                    return new Result<IAsyncEnumerable<string>>
+                    {
+                        IsSuccess = false,
+                        ErrorMessage = responseResult.ErrorMessage, // Includes status code and potentially body
+                        Data = null,
+                        StatusCode = responseResult.StatusCode
+                    };
+                }
+
+                // If successful so far, return a Result containing the async enumerable
+                var asyncEnumerable = ReadLiveStreamContentAsync(responseResult.Data, cancellationToken); // Helper method
+                return new Result<IAsyncEnumerable<string>>
+                {
+                    IsSuccess = true,
+                    Data = asyncEnumerable,
+                    StatusCode = responseResult.StatusCode
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result<IAsyncEnumerable<string>>
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    Data = null,
+                    StatusCode = null
+                };
+            }
+        }
+
         public async Task<Result<byte[]>> SendBytesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                var responseResult = await SendAsync(cancellationToken).ConfigureAwait(false);
+                var responseResult = await SendAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
                 if (!responseResult.IsSuccess)
                 {
                     return new Result<byte[]>
@@ -322,6 +379,7 @@ namespace DHttpClient
                         StatusCode = responseResult.StatusCode
                     };
                 }
+
                 var bytes = await responseResult.Data.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 return new Result<byte[]>
                 {
@@ -342,6 +400,29 @@ namespace DHttpClient
             }
         }
 
+        private async IAsyncEnumerable<string> ReadLiveStreamContentAsync(
+            HttpResponseMessage response,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            using var disposableResponse = response;
+
+            await using var stream = await disposableResponse.Content
+                .ReadAsStreamAsync() 
+                .ConfigureAwait(false);
+
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+
+            while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
+            {
+                var line = await reader.ReadLineAsync().ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    yield return line;
+                }
+            }
+        }
+        
         public void Dispose()
         {
             if (_disposeHttpClient)
@@ -349,5 +430,6 @@ namespace DHttpClient
                 _httpClient?.Dispose();
             }
         }
+        
     }
 }
