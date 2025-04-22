@@ -131,7 +131,7 @@ namespace DHttpClient
         /// <summary>
         /// Sends the request and returns the response content as a Stream wrapped in a Result.
         /// Sends request with HttpCompletionOption.ResponseHeadersRead by default.
-        /// The caller is responsible for disposing the Stream AND the HttpResponseMessage within the Result.Data.
+        /// Dispose the returned Stream to close the underlying connection.
         /// Use the CancellationToken to implement timeouts.
         /// </summary>
         /// <param name="completionOption">Defines when the operation should complete. Defaults to ResponseHeadersRead.</param>

@@ -84,7 +84,7 @@ public static class StringExtensions
     private static readonly JsonSerializerOptions DefaultJsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true,
+        WriteIndented = false,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull 
     };
 
