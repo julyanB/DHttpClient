@@ -33,7 +33,6 @@ public sealed class DHttpClient : IDHttpClient
         _disposeHttpClient = disposeHttpClient;
     }
 
-    /* ────────────────────── fluent config ────────────────────── */
 
     public IDHttpClient WithRequestUri(string requestUri)
     {
@@ -109,7 +108,6 @@ public sealed class DHttpClient : IDHttpClient
         return this;
     }
 
-    /* ────────────────────── send helpers ────────────────────── */
 
     private HttpRequestMessage BuildRequestMessage()
     {
@@ -303,7 +301,6 @@ public sealed class DHttpClient : IDHttpClient
         }
     }
 
-    /* ────────────────────── disposal ────────────────────── */
 
     private bool _disposed;
 
@@ -320,7 +317,6 @@ public sealed class DHttpClient : IDHttpClient
         GC.SuppressFinalize(this);
     }
 
-    /* ────────────────────── helper wrapper ────────────────────── */
 
     /// <summary>
     /// Stream wrapper that disposes the underlying HttpResponseMessage when the stream is closed.
@@ -353,7 +349,6 @@ public sealed class DHttpClient : IDHttpClient
             base.Dispose(disposing);
         }
 
-        /* delegate all required members */
         public override bool CanRead => _inner.CanRead;
         public override bool CanSeek => _inner.CanSeek;
         public override bool CanWrite => _inner.CanWrite;

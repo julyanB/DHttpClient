@@ -16,7 +16,7 @@
         <RepositoryUrl>https://github.com/julyanB/DHttpClient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
-        <PackageReleaseNotes># Release Notes – DHttpClient v1.0.5
+        <PackageReleaseNotes># Release Notes – DHttpClient v1.0.6
 
 ## 🚀 Features
 
@@ -75,7 +75,7 @@ Install-Package DHttpClient
 # or
 dotnet add package DHttpClient
 </PackageReleaseNotes>
-        <Version>1.0.5</Version>
+        <Version>1.0.6</Version>
         <PackageIcon>D-Logo.png</PackageIcon>
         <PackageId>DSeries.DHttpClient.Core</PackageId>
     </PropertyGroup>
