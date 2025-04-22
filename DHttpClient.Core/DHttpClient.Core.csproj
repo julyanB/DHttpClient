@@ -16,14 +16,66 @@
         <RepositoryUrl>https://github.com/julyanB/DHttpClient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
-        <PackageReleaseNotes>Release Notes – DHttpClient Optimizations v1.0.4
+        <PackageReleaseNotes># Release Notes – DHttpClient v1.0.5
 
-            We've made some key improvements to how live streaming responses are handled in DHttpClient.
-            Live Stream Handling Improvements
-            Consistent Error Handling for Streams: The SendLiveStreamAsync method now aligns with other Send methods by returning a IAsyncEnumerable. This means you can now check for initial connection or header-read failures using the Result object before starting to consume the stream data, providing more robust error detection compared to only relying on exceptions during stream consumption.
-            Improved Resource Management: The internal logic for SendLiveStreamAsync has been updated to correctly manage the lifetime of the underlying HttpResponseMessage. It ensures the response and its stream are properly disposed of when the async enumerable is fully consumed or the await foreach loop is exited prematurely.
-            Simplified Data Consumption: For line-delimited stream formats like Server-Sent Events (SSE), SendLiveStreamAsync now automatically strips the data: prefix and leading whitespace from yielded lines, returning only the payload. This simplifies parsing for callers.</PackageReleaseNotes>
-        <Version>1.0.4</Version>
+## 🚀 Features
+
+- **Fluent API Design**
+  - Chainable methods for building HTTP requests with improved readability and clarity.
+
+- **HTTP Methods Support**
+  - All major HTTP verbs supported: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
+
+- **Content Type Support**
+  - JSON payloads (object &amp; dictionary)
+  - Form URL-encoded content
+  - Multipart form-data (for file uploads)
+  - Raw HttpContent
+
+- **Response Handling**
+  - Send as: HttpResponseMessage, string, object (with deserialization), Stream, byte array
+  - Live stream support via `IAsyncEnumerable&lt;string&gt;`
+
+- **Error Handling**
+  - Unified `Result&lt;T&gt;` wrapper for consistent success/error reporting
+  - Built-in error messages and status code capture
+
+- **Custom Headers**
+  - Per-request headers and content-level headers support
+
+- **Cancellation Support**
+  - Use `CancellationToken` for per-request timeout and cancellation control
+
+- **Serialization Extensions**
+  - Object to JSON and JSON to object using System.Text.Json with camelCase support
+  - URL-encoding helpers for query strings and form data
+
+- **Streaming Support**
+  - Stream responses (`SendStreamAsync`)
+  - Live line-delimited streaming (`SendLiveStreamAsync`)
+
+- **DI Integration**
+  - Register with ASP.NET Core's `IHttpClientFactory` via `AddDHttpClient()` extension methods
+
+## 🛠 Improvements
+
+- Helper classes like `MultiPartContentBuilder` to simplify complex payloads
+- Strongly typed extension methods for form, query, and base64 operations
+- Proper disposal of response resources and error resilience
+
+## ✅ Compatibility
+
+- .NET Standard 2.1+, .NET 6+, .NET 7, .NET 8
+- Built for modern .NET projects using System.Text.Json and IHttpClientFactory
+
+## 📦 Installation
+
+```bash
+Install-Package DHttpClient
+# or
+dotnet add package DHttpClient
+</PackageReleaseNotes>
+        <Version>1.0.5</Version>
         <PackageIcon>D-Logo.png</PackageIcon>
         <PackageId>DSeries.DHttpClient.Core</PackageId>
     </PropertyGroup>

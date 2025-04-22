@@ -4,68 +4,54 @@ DHttpClient is a flexible and fluent HTTP request builder for .NET applications.
 
 ## Features
 
-- **Fluent API**: Easily build HTTP requests with a chainable, readable syntax.
-- **Supports All HTTP Methods**: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
-- **Flexible Content Handling**:
-  - JSON serialization and deserialization
-  - Form URL-encoded content
-  - Multipart form-data for file uploads
+- **Fluent API**: Chainable, readable syntax.
+- **All HTTP Methods**: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
+- **Flexible Content Handling**
+  - JSON serialization & deserialization
+  - Form URL‑encoded content
+  - Multipart form‑data for file uploads
 - **Automatic Query Parameter Handling**
-- **Customizable Headers and Timeout Settings**
-- **Error Handling with Unified Response Wrapper**
-- **Supports Custom HttpClient for DI compatibility**
-- **Result<T> Wrapper** for uniform success/error handling
-- **Stream and Byte Array Support** for file downloads
-- **Custom HTTP Headers for Requests and Content**
-- **Supports Multipart Requests** for handling multiple parts of data
-- **Custom HTTP Timeout Configuration**
+- **Custom Headers** at both request and content levels
+- **Per‑request CancellationToken Support** (for timeouts/cancellation)
+- **Unified Error Handling** with `Result<T>` wrapper
+- **Dependency‑Injection Ready** via `IHttpClientFactory`
+- **Stream & Byte‑Array Support** for downloads
+- **Live Stream Support** (e.g., Server‑Sent Events)
 
 ---
 
 ## Installation
 
-Add the package reference to your .NET project:
+Add the NuGet package to your .NET project:
 
-```sh
+````bash
 Install-Package DHttpClient
-```
-
-Or, using .NET CLI:
-
-```sh
+# or
 dotnet add package DHttpClient
-```
 
----
 
 ## Usage
 
 ### Basic GET Request
 
 ```csharp
-using DHttpClient;
-
-var request = new HttpRequestBuilder()
+var client = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/get")
     .WithMethod(HttpMethod.Get);
 
-var response = await request.SendAsync();
+var result = await client.SendAsync();
 
-if (response.IsSuccess)
-{
-    var content = await response.Data.Content.ReadAsStringAsync();
-    Console.WriteLine(content);
-}
+if (result.IsSuccess)
+    Console.WriteLine($"Status: {result.Data.StatusCode}");
 else
-{
-    Console.WriteLine($"Error: {response.ErrorMessage}");
-}
-```
+    Console.WriteLine($"Error: {result.ErrorMessage}");
+
+````
 
 ### GET Request with Query Parameters
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/get")
     .WithQueryParameters(new { user = "JohnDoe", age = 30 })
     .WithMethod(HttpMethod.Get);
@@ -76,7 +62,7 @@ var request = new HttpRequestBuilder()
 ```csharp
 var payload = new { name = "John", email = "john@example.com" };
 
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/post")
     .WithMethod(HttpMethod.Post)
     .WithBodyContent(payload);
@@ -91,7 +77,7 @@ var formData = new Dictionary<string, string>
     { "password", "securepassword" }
 };
 
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/post")
     .WithMethod(HttpMethod.Post)
     .WithFormUrlEncodedContent(formData);
@@ -100,7 +86,7 @@ var request = new HttpRequestBuilder()
 ### Multipart Form-Data (File Upload)
 
 ```csharp
-var multipartRequest = new HttpRequestBuilder()
+var multipartRequest = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/post")
     .WithMethod(HttpMethod.Post)
     .WithFormMultiPartContent(builder => builder
@@ -111,7 +97,7 @@ var multipartRequest = new HttpRequestBuilder()
 ### Handling JSON Responses
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/json")
     .WithMethod(HttpMethod.Get);
 
@@ -126,7 +112,7 @@ if (response.IsSuccess)
 ### Configuring Headers
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/get")
     .WithMethod(HttpMethod.Get)
     .WithHeader("Authorization", "Bearer YOUR_TOKEN")
@@ -136,7 +122,7 @@ var request = new HttpRequestBuilder()
 ### Setting Custom Timeout
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/get")
     .WithMethod(HttpMethod.Get)
     .WithTimeout(TimeSpan.FromSeconds(10));
@@ -154,7 +140,7 @@ var request = new HttpRequestBuilder(httpClient)
 ### Handling Multipart Requests
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/post")
     .WithMethod(HttpMethod.Post)
     .WithFormMultiPartContent(builder => builder
@@ -179,7 +165,7 @@ Sends the HTTP request asynchronously and returns the raw `HttpResponseMessage` 
 ### Usage:
 
 ```csharp
-var request = new HttpRequestBuilder()
+var request = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://httpbin.org/get")
     .WithMethod(HttpMethod.Get);
 
@@ -338,7 +324,7 @@ using System; // For Exception
 // Requires System.Linq.Async NuGet package for the WithCancellation extension if desired
 
 // Assuming a builder is configured for a live stream endpoint...
-var streamBuilder = new HttpRequestBuilder()
+var streamBuilder = new DHttpClient(new HttpClient(), disposeHttpClient: false)
     .WithRequestUri("https://your-sse-endpoint.com/stream") // Replace with your stream URL
     .WithMethod(HttpMethod.Get); // SSE is typically GET
 
