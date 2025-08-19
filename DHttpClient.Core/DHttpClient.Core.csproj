@@ -1,99 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <RootNamespace>DHttpClient</RootNamespace>
-        <TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Title>DHttpClient - Fluent HTTP Client for .NET</Title>
-        <Authors>Julian B.</Authors>
-        <Description>A fluent HTTP client for .NET that simplifies HTTP requests with a chainable API, error handling, and built-in support for various content types.</Description>
-        <Copyright>© 2025 DHttpClient.Core. All rights reserved.</Copyright>
-        <PackageProjectUrl>https://github.com/julyanB/DHttpClient</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/julyanB/DHttpClient</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>http client, fluent api, http requests, .NET, DHttpClient</PackageTags>
-        <PackageReleaseNotes># Release Notes – DHttpClient v1.0.6
+	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-## 🚀 Features
+		<RootNamespace>DHttpClient</RootNamespace>
+		<AssemblyName>DHttpClient.Core</AssemblyName>
+		<PackageId>DSeries.DHttpClient.Core</PackageId>
+		<Version>1.0.7</Version>
+		<Title>DHttpClient - Fluent HTTP Client for .NET</Title>
+		<Authors>Julian B.</Authors>
+		<Description>A fluent HTTP client for .NET that simplifies HTTP requests with a chainable API, error handling, and built-in support for various content types.</Description>
+		<PackageProjectUrl>https://github.com/julyanB/DHttpClient</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/julyanB/DHttpClient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<!-- NuGet expects space-separated tags -->
+		<PackageTags>http-client fluent-api http-requests dotnet http dhttpclient</PackageTags>
+		<PackageIcon>D-Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<Deterministic>true</Deterministic>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+		<!-- suppress missing XML docs warnings for public members if any -->
+		<Copyright>© 2025 DHttpClient.Core. All rights reserved.</Copyright>
 
-- **Fluent API Design**
-  - Chainable methods for building HTTP requests with improved readability and clarity.
+		<PackageReleaseNotes>
+			# DHttpClient v1.0.7
 
-- **HTTP Methods Support**
-  - All major HTTP verbs supported: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
+			## Fixes/Improvements
+			- JSON: `ToObject&lt;T&gt;` no longer swallows `JsonException`; `SendObjectAsync&lt;T&gt;` reports deserialization errors correctly.
+			- Headers: request headers are no longer pushed into content headers; invalid headers now throw with a clear message.
+			- Multipart: removed manual quotes around `Content-Disposition` `Name`/`FileName` to avoid double-quoting.
+			- DI extensions: added missing `using System.Net.Http;` so typed client overload compiles.
 
-- **Content Type Support**
-  - JSON payloads (object &amp; dictionary)
-  - Form URL-encoded content
-  - Multipart form-data (for file uploads)
-  - Raw HttpContent
+			## Features
+			- Fluent API for building HTTP requests.
+			- JSON/form-urlencoded/multipart support.
+			- Responses as `HttpResponseMessage`, `string`, typed object, `Stream`, `byte[]`.
+			- Live streaming with `IAsyncEnumerable&lt;string&gt;`.
+			- Result wrapper with status code and error details.
+			- Easy DI via `IHttpClientFactory`.
+		</PackageReleaseNotes>
+	</PropertyGroup>
 
-- **Response Handling**
-  - Send as: HttpResponseMessage, string, object (with deserialization), Stream, byte array
-  - Live stream support via `IAsyncEnumerable&lt;string&gt;`
-
-- **Error Handling**
-  - Unified `Result&lt;T&gt;` wrapper for consistent success/error reporting
-  - Built-in error messages and status code capture
-
-- **Custom Headers**
-  - Per-request headers and content-level headers support
-
-- **Cancellation Support**
-  - Use `CancellationToken` for per-request timeout and cancellation control
-
-- **Serialization Extensions**
-  - Object to JSON and JSON to object using System.Text.Json with camelCase support
-  - URL-encoding helpers for query strings and form data
-
-- **Streaming Support**
-  - Stream responses (`SendStreamAsync`)
-  - Live line-delimited streaming (`SendLiveStreamAsync`)
-
-- **DI Integration**
-  - Register with ASP.NET Core's `IHttpClientFactory` via `AddDHttpClient()` extension methods
-
-## 🛠 Improvements
-
-- Helper classes like `MultiPartContentBuilder` to simplify complex payloads
-- Strongly typed extension methods for form, query, and base64 operations
-- Proper disposal of response resources and error resilience
-
-## ✅ Compatibility
-
-- .NET Standard 2.1+, .NET 6+, .NET 7, .NET 8
-- Built for modern .NET projects using System.Text.Json and IHttpClientFactory
-
-## 📦 Installation
-
-```bash
-Install-Package DHttpClient
-# or
-dotnet add package DHttpClient
-</PackageReleaseNotes>
-        <Version>1.0.6</Version>
-        <PackageIcon>D-Logo.png</PackageIcon>
-        <PackageId>DSeries.DHttpClient.Core</PackageId>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="System.Text.Json" Version="9.0.4" />
+		<PackageReference Include="System.Text.Json" Version="9.0.4" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+	</ItemGroup>
 
-    </ItemGroup>
-
-    <PropertyGroup>
-        <PackageIcon>D-Logo.png</PackageIcon>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="D-Logo.png" Pack="true" PackagePath="." />
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="D-Logo.png" Pack="true" PackagePath="." />
+		<None Include="../README.md" Pack="true" PackagePath="." />
+	</ItemGroup>
 
 </Project>
