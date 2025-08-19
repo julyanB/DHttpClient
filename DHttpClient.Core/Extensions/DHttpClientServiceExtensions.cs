@@ -16,7 +16,7 @@ namespace DHttpClient.Extensions
         {
             // Registers IDHttpClient with an HttpClient injected via IHttpClientFactory.
             // DHttpClient receives the HttpClient and sets disposeHttpClient to false.
-            services.AddHttpClient<IDHttpClient, global::DHttpClient.DHttpClient>();
+            services.AddHttpClient<IDHttpClient, DHttpClient>();
             return services;
         }
 
@@ -28,7 +28,7 @@ namespace DHttpClient.Extensions
         /// <returns>The IHttpClientBuilder for further configuration.</returns>
         public static IHttpClientBuilder AddDHttpClient(this IServiceCollection services, string name)
         {
-             return services.AddHttpClient<IDHttpClient, global::DHttpClient.DHttpClient>(name);
+             return services.AddHttpClient<IDHttpClient, DHttpClient>(name);
         }
 
          /// <summary>
