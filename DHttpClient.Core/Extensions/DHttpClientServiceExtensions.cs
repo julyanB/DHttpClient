@@ -1,5 +1,6 @@
+using System.Net.Http;
+using System;
 using Microsoft.Extensions.DependencyInjection;
-using System; 
 
 namespace DHttpClient.Extensions
 {

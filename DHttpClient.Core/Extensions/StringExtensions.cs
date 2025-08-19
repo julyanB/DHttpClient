@@ -116,23 +116,18 @@ public static class StringExtensions
     /// <typeparam name="T">The target type.</typeparam>
     /// <param name="json">The JSON string to deserialize.</param>
     /// <returns>The deserialized object, or default(T) if JSON is null/empty or represents null.</returns>
-    public static T? ToObject<T>(this string? json) 
+    public static T? ToObject<T>(this string? json)
     {
         if (string.IsNullOrWhiteSpace(json))
-            return default; 
-
-        try
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return JsonSerializer.Deserialize<T>(json, options);
-        }
-        catch (JsonException ex)
-        {
-            Console.Error.WriteLine($"JSON Deserialization Error: {ex.Message}. JSON: {json}");
             return default;
-        }
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        // Let JsonException bubble to the caller
+        return JsonSerializer.Deserialize<T>(json, options);
     }
+
 }

@@ -117,11 +117,27 @@ public sealed class DHttpClient : IDHttpClient
         var msg = new HttpRequestMessage(_httpMethod, _uriBuilder.Uri) { Content = _httpContent };
 
         foreach (var (k, v) in _httpHeaders)
-            if (!msg.Headers.TryAddWithoutValidation(k, v))
-                msg.Content?.Headers.TryAddWithoutValidation(k, v);
+        {
+            if (msg.Headers.TryAddWithoutValidation(k, v))
+                continue;
+
+            if (msg.Content is not null && IsContentHeader(k))
+            {
+                msg.Content.Headers.TryAddWithoutValidation(k, v);
+                continue;
+            }
+
+            throw new InvalidOperationException($"Header '{k}' is not a valid request header.");
+        }
 
         return msg;
     }
+
+    private static bool IsContentHeader(string name) =>
+    name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase) ||
+    name.Equals("Content-Length", StringComparison.OrdinalIgnoreCase) ||
+    name.StartsWith("Content-", StringComparison.OrdinalIgnoreCase);
+
 
     private void Reset()
     {
@@ -210,13 +226,17 @@ public sealed class DHttpClient : IDHttpClient
         try
         {
             var obj = strResult.Data!.ToObject<T>();
-            return new Result<T> { IsSuccess = true, Data = obj!, StatusCode = strResult.StatusCode };
+            if (obj is null)
+                return new Result<T> { IsSuccess = false, ErrorMessage = "Failed to deserialize JSON to the requested type.", StatusCode = strResult.StatusCode };
+
+            return new Result<T> { IsSuccess = true, Data = obj, StatusCode = strResult.StatusCode };
         }
         catch (JsonException jex)
         {
             return new Result<T> { IsSuccess = false, ErrorMessage = $"JSON deserialize error: {jex.Message}", StatusCode = strResult.StatusCode };
         }
     }
+
 
     public async Task<Result<Stream>> SendStreamAsync(
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseHeadersRead,

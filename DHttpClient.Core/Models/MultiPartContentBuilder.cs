@@ -34,7 +34,7 @@ namespace DHttpClient.Models
 
             textContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
-                Name = $"\"{name}\"" 
+                Name = name
             };
 
             _contents.Add(textContent);
@@ -62,8 +62,8 @@ namespace DHttpClient.Models
 
             byteContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
-                Name = $"\"{name}\"",
-                FileName = $"\"{fileName}\"" 
+                Name = name,
+                FileName = fileName
             };
 
             if (!string.IsNullOrWhiteSpace(contentType))
@@ -91,15 +91,15 @@ namespace DHttpClient.Models
                 throw new ArgumentNullException(nameof(content));
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentException("File name cannot be null or whitespace.", nameof(fileName));
-             if (!content.CanRead)
+            if (!content.CanRead)
                 throw new ArgumentException("Stream must be readable.", nameof(content));
 
             var streamContent = new StreamContent(content);
 
             streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
-                Name = $"\"{name}\"",
-                FileName = $"\"{fileName}\""
+                Name = name,
+                FileName = fileName
             };
 
             if (!string.IsNullOrWhiteSpace(contentType))
